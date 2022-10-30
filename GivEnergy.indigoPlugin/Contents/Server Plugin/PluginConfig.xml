@@ -7,7 +7,7 @@
 	<Field id="simpleseparator4" type="separator">
 	</Field>
 	<Field id="midLabel" type="label" fontSize="small" fontColor="darkgray">
-		<Label>Polling frequency to refresh AC Status and timeouts for requests (defaults should be fine)</Label>
+		<Label>Polling frequency to refresh GivEnergy Status and timeouts for requests (defaults should be fine)</Label>
 	</Field>
 	<Field id="pollingFrequency" type="textfield" defaultValue="15">
 	<Label>Enter Polling Frequency in Seconds:</Label>
