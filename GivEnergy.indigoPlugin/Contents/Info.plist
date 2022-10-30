@@ -9,7 +9,7 @@
 	<key>IwsApiVersion</key>
 	<string>1.0.0</string>
 	<key>CFBundleDisplayName</key>
-	<string>Giv Energy Controller</string>
+	<string>GivEnergy</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.barn.indigoplugin.GivEnergy</string>
 	<key>CFBundleVersion</key>

@@ -9,7 +9,7 @@
 	<Field id="midLabel" type="label" fontSize="small" fontColor="darkgray">
 		<Label>Polling frequency to refresh GivEnergy Status and timeouts for requests (defaults should be fine)</Label>
 	</Field>
-	<Field id="pollingFrequency" type="textfield" defaultValue="15">
+	<Field id="polling_frequency" type="textfield" defaultValue="15">
 	<Label>Enter Polling Frequency in Seconds:</Label>
 	</Field>
 	<Field id="request_timeout" type="textfield" defaultValue="2">

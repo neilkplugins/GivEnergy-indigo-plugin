@@ -1,266 +1,129 @@
 <?xml version="1.0"?>
-<!-- If your plugin defines device types, you can define them here.
-
-	 Devices must specify their type (via the type attribute):
-
-		relay (ON/OFF/STATUS)
-		dimmer (ON/OFF/DIM/BRIGHTEN/SET BRIGHTNESS/STATUS)
-		speedcontrol (ON/OFF/SET SPEED LEVEL/SET SPEED INDEX/INCREASE/DECREASE/STATUS)
-		sensor (ON/OFF/STATUS)
-		thermostat
-		sprinkler (ACTIVE ZONE INDEX)
-		custom
-
-	 The first six inherit states, actions and events from Indigo. You can
-	 also specify your own custom actions and additional states, if needed.
-
-	 The Device example below specifies the thermostat type.
-	 
-	 Devices must also specify a unique typeID - so, for instance, if you define
-	 2 different thermostat type devices then your plugin can distinguish between
-	 the two by the typeID.
--->
-
 <Devices>
-	<!-- This device illustrates how a plugin can inherit Indigo's thermostat
-	device behavior including thermostat device states, thermostat actions,
-	and will support Indigo and Indigo Touch's native UI for thermostat type
-	devices.
-	-->
-	<Device type="thermostat" id="daikinwifi">
-		<Name>Daikin Wifi Controller</Name>
+	<!-- Define some devices -->
+	<Device type="custom" id="givenergy_inverter">
+		<Name>Inverter</Name>
 		<ConfigUI>
-			<!-- The ConfigUI here is just an example of the type of device
-			specific UI that might be needed. Here you might specify a text
-			field for an IP address, a serial port popup, or other device
-			specific options.
-			-->
-			<Field type="textfield" id="address" defaultValue="">
-				<Label>Controller IP Address:</Label>
+			<Field id="api_key" type="textfield">
+				<Label>Enter GivEnergy API Key:</Label>
+			</Field>
+			<Field id="label" type="label" fontSize="small" fontColor="darkgray">
+				<Label>Enter your API key from you GivEnergy Account</Label>
+			</Field>
+			<Field id="inverter_serial" type="textfield">
+				<Label>Enter your inverter serial number:</Label>
+			</Field>
+			<Field id="label2" type="label" fontSize="small" fontColor="darkgray">
+				<Label>Enter the serial number of your inverter</Label>
 			</Field>
 
-			<!-- By default thermostat type devices automatically inherit these
-			device properties which describe the characteristics of a specific
-			thermostat instance:
-
-				NumTemperatureInputs:			should range between 1 and 3
-				NumHumidityInputs:				should range between 0 and 3
-				SupportsHeatSetpoint:			True or False
-				SupportsCoolSetpoint:			True or False
-				SupportsHvacOperationMode:		True or False
-				SupportsHvacFanMode:			True or False
-				ShowCoolHeatEquipmentStateUI:	True or False
-			
-			Plugins can update these properties either in device ConfigUI
-			(like below), or can update them from python by using the
-			dev.replacePluginPropsOnServer() method, most likely inside your
-			deviceStartComm method. Both will trigger the Indigo Server to
-			automatically rebuild the device's states list based on the needed
-			changes. Since most entry-level thermostats have 1 temp sensor and
-			0 humidity sensors, those are the default values. If your
-			thermostat supports those, you don't need to change anything.
-			-->
-			<Field type="separator" id="simpleSeparator1" />
-			<Field type="menu" id="NumTemperatureInputs" defaultValue="1" hidden="true">
-				<Label>Number of temperature sensors:</Label>
-				<List>
-					<Option value="0">None</Option>
-					<Option value="1">1</Option>
-					<Option value="2">2</Option>
-					<Option value="3">3</Option>
-				</List>
-			</Field>
-			<Field type="menu" id="NumHumidityInputs" defaultValue="0" hidden="true">
-				<Label>Number of humidity sensors:</Label>
-				<List>
-					<Option value="0">None</Option>
-					<Option value="1">1</Option>
-					<Option value="2">2</Option>
-					<Option value="3">3</Option>
-				</List>
-			</Field>
-			<Field type="checkbox" id="requireHTTPS" defaultValue="false" hidden="true">
-				<Label>Does the unit require "HTTPS" support:</Label>
-				<Description>Configure HTTPS Support</Description>
-			</Field>
-			<Field type="checkbox" id="consumptionSupport" defaultValue="true" hidden="false">
-				<Label>Does the unit provide consumption data:</Label>
-				<Description>Depending on controller or version, uncheck if you get errors</Description>
-			</Field>
-			<Field type="checkbox" id="decimalSetPoint" defaultValue="true" hidden="false">
-				<Label>Does the unit support decimal set points:</Label>
-				<Description>Depending on controller, uncheck if setpoints fail to apply</Description>
-			</Field>
-			<Field type="textfield" id="uuid" defaultValue="" visibleBindingId="requireHTTPS" visibleBindingValue="true">
-				<Label>Enter your registered uuid:</Label>
-			</Field>
-			<Field type="checkbox" id="SupportsHeatSetpoint" defaultValue="true" hidden="true">
-				<Label>Supports heat setpoint:</Label>
-				<Description>Show heat setpoint controls in UI</Description>
-			</Field>
-			<Field type="checkbox" id="SupportsCoolSetpoint" defaultValue="true" hidden="true">
-				<Label>Supports cool setpoint:</Label>
-				<Description>Show cool setpoint controls in UI</Description>
-			</Field>
-			<Field type="checkbox" id="SupportsHvacOperationMode" defaultValue="true" hidden="true">
-				<Label>Supports thermostat modes:</Label>
-				<Description>Show thermostat mode controls (heat/cool/auto) in UI</Description>
-			</Field>
-			<Field type="checkbox" id="SupportsHvacFanMode" defaultValue="false" hidden="true">
-				<Label>Supports fan modes:</Label>
-				<Description>Show fan mode controls (auto/always on) in UI</Description>
-			</Field>
-			<Field type="checkbox" id="ShowCoolHeatEquipmentStateUI" defaultValue="true" hidden="true">
-				<Label>Supports compressor/furnace feedback:</Label>
-				<Description>Show compressor/furnace states in UI</Description>
-			</Field>
-			<Field type="menu" id="measurement" defaultValue="C" >
-				<Label>Show temps in:</Label>
-				<List>
-					<Option value="F">Fahrenheit</Option>
-					<Option value="C">Celsius</Option>
-				</List>
-			</Field>
-			<Field type="checkbox" id="SupportsEnergyMeter" defaultValue="true" hidden="true" />
-			<Field type="checkbox" id="sync_setpoints" defaultValue="true" hidden="false" >
-			<Label>Synchronise Indigo and Controller Set Points:</Label>
-				<Description>Allows App/Remote to update Set Points in Indigo</Description>
-			</Field>
-			
 		</ConfigUI>
 		<States>
-			<!-- By default thermostat type devices automatically inherit these
-			read-only states:
-
-				temperatureInputsAll, humidityInputsAll,
-				hvacOperationModeIsOff, hvacOperationModeIsHeat, hvacOperationModeIsCool,
-				hvacOperationModeIsAuto, hvacOperationModeIsProgramHeat, hvacOperationModeIsProgramCool,
-				hvacOperationModeIsProgramAuto,
-				hvacFanModeIsAuto, hvacFanModeIsAlwaysOn.
-			
-			Additionally, the following writable states are inherited:
-
-				temperatureInput1, temperatureInput2, temperatureInput3,
-				humidityInput1, humidityInput2, humidityInput3,
-				setpointHeat, setpointCool,
-				hvacOperationMode, hvacFanMode,
-				hvacCoolerIsOn, hvacHeaterIsOn, hvacFanIsOn
-			
-			The Indigo Server automatically updates some of the read-only states when
-			a writable state is updated. For example, if your plugin updates the
-			temperatureInput1 state then the temperatureInputsAll state is automatically
-			updated for you. Likewise, if you update the hvacOperationMode state to
-			indigo.kHvacMode.Heat then the read-only state hvacOperationModeIsHeat will
-			be set to True and all of the other hvacOperationModeIs* states will be set
-			to False.
-
-			The plugin can specify additional custom states and custom
-			actions (in Actions.xml) to modify custom states. As an example
-			here, we define a new custom state, backlightBrightness, which
-			is used to control the brightness of the backlit display of
-			the thermostat.
-			-->
-			<State id="unit_power">
-				<ValueType>Boolean</ValueType>
-				<TriggerLabel>Unit Power</TriggerLabel>
-				<ControlPageLabel>Unit Power</ControlPageLabel>
-			</State>
-			<State id="operationMode">
+			<State id="data_timestamp" defaultValue="Unknown">
 				<ValueType>String</ValueType>
-				<TriggerLabel>Current operation mode</TriggerLabel>
-				<ControlPageLabel>Current operation mode</ControlPageLabel>
+				<TriggerLabel>Last Update Data Time Stamp</TriggerLabel>
+				<ControlPageLabel>Last Update Data Time Stamp</ControlPageLabel>
 			</State>
-			<State id="setpoint_temp">
+			<State id="solar_power" defaultValue="Unknown">
 				<ValueType>Number</ValueType>
-				<TriggerLabel>Active Set Point Temperature</TriggerLabel>
-				<ControlPageLabel>Active Temperature Setpoint</ControlPageLabel>
+				<TriggerLabel>Solar Power</TriggerLabel>
+				<ControlPageLabel>Solar Power</ControlPageLabel>
 			</State>
-			<State id="outside_temp">
+			<State id="array_1_voltage">
 				<ValueType>Number</ValueType>
-				<TriggerLabel>Outside Temperature</TriggerLabel>
-				<ControlPageLabel>Outside Temperature</ControlPageLabel>
-			</State>
-			<State id="auto_setpoint">
+				<TriggerLabel>Array 1 Voltage</TriggerLabel>
+				<ControlPageLabel>Array 1 Voltage</ControlPageLabel>
+				</State>
+			<State id="array_1_current">
 				<ValueType>Number</ValueType>
-				<TriggerLabel>Set Point Temperature Stored Auto Mode</TriggerLabel>
-				<ControlPageLabel>Temperature Setpoint Stored Auto Mode</ControlPageLabel>
-			</State>
-			<State id="last_cool_setpoint">
+				<TriggerLabel>Array 1 Current</TriggerLabel>
+				<ControlPageLabel>Array 1 Current</ControlPageLabel>
+				</State>
+			<State id="array_1_power">
 				<ValueType>Number</ValueType>
-				<TriggerLabel>Set Point Temperature Stored Cool Mode</TriggerLabel>
-				<ControlPageLabel>Temperature Setpoint Stored Cool Mode</ControlPageLabel>
-			</State>
-			<State id="last_heat_setpoint">
+				<TriggerLabel>Array 1 Power</TriggerLabel>
+				<ControlPageLabel>Array 1 Power</ControlPageLabel>
+				</State>
+			<State id="array_2_voltage">
 				<ValueType>Number</ValueType>
-				<TriggerLabel>Set Point Temperature Stored Heat Mode</TriggerLabel>
-				<ControlPageLabel>Temperature Setpoint Stored Heat Mode</ControlPageLabel>
-			</State>
-			<State id="setpoint_humidity">
+				<TriggerLabel>Array 2 Voltage</TriggerLabel>
+				<ControlPageLabel>Array 2 Voltage</ControlPageLabel>
+				</State>
+			<State id="array_2_current">
 				<ValueType>Number</ValueType>
-				<TriggerLabel>Humidty Setpoint</TriggerLabel>
-				<ControlPageLabel>Humidity Setpoint</ControlPageLabel>
-			</State>
-			<State id="fan_rate">
-				<ValueType>String</ValueType>
-				<TriggerLabel>Fan Rate</TriggerLabel>
-				<ControlPageLabel>Fan Rate</ControlPageLabel>
-			</State>
-			<State id="fan_direction">
+				<TriggerLabel>Array 2 Current</TriggerLabel>
+				<ControlPageLabel>Array 2 Current</ControlPageLabel>
+				</State>
+			<State id="array_2_power">
 				<ValueType>Number</ValueType>
-				<TriggerLabel>Fan Direction</TriggerLabel>
-				<ControlPageLabel>Fan Direction</ControlPageLabel>
-			</State>
-			<State id="fan_direction_up_down">
-				<ValueType>String</ValueType>
-				<TriggerLabel>Fan Direction - Up Down</TriggerLabel>
-				<ControlPageLabel>Fan Direction - Up Down</ControlPageLabel>
-			</State>
-			<State id="fan_direction_left_right">
-				<ValueType>String</ValueType>
-				<TriggerLabel>Fan Direction - Left Right</TriggerLabel>
-				<ControlPageLabel>Fan Direction - Left Right</ControlPageLabel>
-			</State>
-			<State id="mode">
-				<ValueType>String</ValueType>
-				<TriggerLabel>Numeric Mode Value</TriggerLabel>
-				<ControlPageLabel>Numeric Mode</ControlPageLabel>
-			</State>
-			<State id="special_mode">
-				<ValueType>String</ValueType>
-				<TriggerLabel>Special Mode Status</TriggerLabel>
-				<ControlPageLabel>Special Mode Status</ControlPageLabel>
-			</State>
-			<State id="today_cool_consump">
+				<TriggerLabel>Array 2 Power</TriggerLabel>
+				<ControlPageLabel>Array 2 Power</ControlPageLabel>
+				</State>
+			<State id="grid_voltage">
 				<ValueType>Number</ValueType>
-				<TriggerLabel>Energy Consumption Cooling - Today</TriggerLabel>
-				<ControlPageLabel>Energy Consumption Cooling - Today</ControlPageLabel>
-			</State>
-			<State id="today_heat_consump">
+				<TriggerLabel>Grid Voltage</TriggerLabel>
+				<ControlPageLabel>Grid Voltage</ControlPageLabel>
+				</State>
+			<State id="grid_current">
 				<ValueType>Number</ValueType>
-				<TriggerLabel>Energy Consumption Cooling - Today</TriggerLabel>
-				<ControlPageLabel>Energy Consumption Cooling - Today</ControlPageLabel>
-			</State>
-			<State id="week_cool_consump">
+				<TriggerLabel>Grid Current</TriggerLabel>
+				<ControlPageLabel>Grid Current</ControlPageLabel>
+				</State>
+			<State id="grid_power">
 				<ValueType>Number</ValueType>
-				<TriggerLabel>Energy Consumption Cooling - Week</TriggerLabel>
-				<ControlPageLabel>Energy Consumption Cooling - Week</ControlPageLabel>
-			</State>
-			<State id="week_heat_consump">
+				<TriggerLabel>Grid Power</TriggerLabel>
+				<ControlPageLabel>Grid Power</ControlPageLabel>
+				</State>
+			<State id="grid_frequency">
 				<ValueType>Number</ValueType>
-				<TriggerLabel>Energy Consumption Cooling - Week</TriggerLabel>
-				<ControlPageLabel>Energy Consumption Cooling - Week</ControlPageLabel>
-			</State>
-			<State id="year_cool_consump">
+				<TriggerLabel>Grid Frequency</TriggerLabel>
+				<ControlPageLabel>Grid Frequency</ControlPageLabel>
+				</State>
+			<State id="battery_percentage">
 				<ValueType>Number</ValueType>
-				<TriggerLabel>Energy Consumption Cooling - Year</TriggerLabel>
-				<ControlPageLabel>Energy Consumption Cooling - Year</ControlPageLabel>
-			</State>
-			<State id="year_heat_consump">
+				<TriggerLabel>Battery Percentage</TriggerLabel>
+				<ControlPageLabel>Battery Percentage</ControlPageLabel>
+				</State>
+			<State id="battery_power">
 				<ValueType>Number</ValueType>
-				<TriggerLabel>Energy Consumption Cooling - Year</TriggerLabel>
-				<ControlPageLabel>Energy Consumption Cooling - Year</ControlPageLabel>
-			</State>
-
+				<TriggerLabel>Battery Power</TriggerLabel>
+				<ControlPageLabel>Battery Power</ControlPageLabel>
+				</State>
+			<State id="battery_temp">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>Battery Temperature</TriggerLabel>
+				<ControlPageLabel>Battery Temperature</ControlPageLabel>
+				</State>
+			<State id="inverter_temp">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>Inverter Temperature</TriggerLabel>
+				<ControlPageLabel>Inverter Temperature</ControlPageLabel>
+				</State>
+			<State id="inverter_power">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>Inverter Power</TriggerLabel>
+				<ControlPageLabel>Inverter Power</ControlPageLabel>
+				</State>
+			<State id="inverter_output_voltage">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>Inverter Output Voltage</TriggerLabel>
+				<ControlPageLabel>Inverter Output Voltage</ControlPageLabel>
+				</State>
+			<State id="inverter_output_frequency">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>Inverter Output Frequency</TriggerLabel>
+				<ControlPageLabel>Inverter Output Frequency</ControlPageLabel>
+				</State>
+			<State id="inverter_eps_power">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>Inverter EPS Power</TriggerLabel>
+				<ControlPageLabel>Inverter EPS Power</ControlPageLabel>
+				</State>
+			<State id="consumption">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>Consumption</TriggerLabel>
+				<ControlPageLabel>Consumption</ControlPageLabel>
+				</State>
 		</States>
 	</Device>
 </Devices>
