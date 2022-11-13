@@ -126,4 +126,70 @@
 				</State>
 		</States>
 	</Device>
+	<Device type="custom" id="givenergy_flow">
+		<Name>Energy Flow</Name>
+		<ConfigUI>
+			<Field id="inverterID" type="menu" >
+                <Label>Inverter </Label>
+                <List class="self" filter="" method="getInverterDevices" dynamicReload="true"/>
+            </Field>
+		<Field id="aggregation" type="menu">
+			<Label>Interval:</Label>
+			<List>
+			<Option value="0">Half Hourly</Option>
+			<Option value="1">Daily</Option>
+			<Option value="2">Monthly</Option>
+				<Option value="3">Yearly</Option>
+
+
+			</List>
+		</Field>
+
+		</ConfigUI>
+		<State id="start_time">
+				<ValueType>String</ValueType>
+				<TriggerLabel>Period Start Time</TriggerLabel>
+				<ControlPageLabel>Period Start Time</ControlPageLabel>
+				</State>
+		<State id="end_time">
+				<ValueType>String</ValueType>
+				<TriggerLabel>Period End Time</TriggerLabel>
+				<ControlPageLabel>Period End Time</ControlPageLabel>
+				</State>
+		<State id="PV_to_Home">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>PV to Home</TriggerLabel>
+				<ControlPageLabel>PV to Home</ControlPageLabel>
+				</State>
+		<State id="PV_to_Battery">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>PV to Battery</TriggerLabel>
+				<ControlPageLabel>PV to Battery</ControlPageLabel>
+				</State>
+		<State id="PV_to_Grid">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>PV to Grid</TriggerLabel>
+				<ControlPageLabel>PV to Grid</ControlPageLabel>
+				</State>
+		<State id="Grid_to_Home">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>Grid to Home</TriggerLabel>
+				<ControlPageLabel>Grid to Home</ControlPageLabel>
+				</State>
+		<State id="Grid_to_Battery">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>Grid to Battery</TriggerLabel>
+				<ControlPageLabel>Grid to Battery</ControlPageLabel>
+				</State>
+		<State id="Battery_to_Home">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>Battery to Home</TriggerLabel>
+				<ControlPageLabel>Battery to Home</ControlPageLabel>
+				</State>
+		<State id="Battery_to_Grid">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>Battery to Grid</TriggerLabel>
+				<ControlPageLabel>Battery to Grid</ControlPageLabel>
+				</State>
+	</Device>
 </Devices>
