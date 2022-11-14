@@ -168,7 +168,7 @@ class Plugin(indigo.PluginBase):
             payload = {
                 "start_time": str(start_time),
                 "end_time": str(end_time),
-                "grouping": device.pluginProps['aggregation']
+                "grouping": int(device.pluginProps['aggregation'])
             }
 
             self.debugLog("Payload is:")
@@ -183,7 +183,7 @@ class Plugin(indigo.PluginBase):
             self.debugLog(headers)
 
             try:
-                 response = requests.request('POST', url, headers=headers,json=payload, timeout=requestsTimeOut)
+                 response = requests.request('POST', url, headers=headers, json=payload, timeout=requestsTimeOut)
                  response.raise_for_status()
             except requests.exceptions.HTTPError as e:
                  self.errorLog(
