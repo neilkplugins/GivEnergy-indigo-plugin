@@ -10,6 +10,7 @@
 ################################################################################
 import indigo
 import requests
+import json
 from datetime import datetime, timedelta, date
 
 
@@ -143,20 +144,25 @@ class Plugin(indigo.PluginBase):
             match device.pluginProps['aggregation']:
                 case "0":
                     self.debugLog("Half Hourly Reporting")
-                    end_time = time_now + (time_now.min - time_now) % timedelta(minutes=30)
-                    start_time = time_now - (time_now - time_now.min) % timedelta(minutes=30)
+                    start_time = date.today()
+                    end_time = date.today()
+                    #end_time = time_now + (time_now.min - time_now) % timedelta(minutes=30)
+                    #start_time = time_now - (time_now - time_now.min) % timedelta(minutes=30)
                 case "1":
                     self.debugLog("Daily Reporting")
                     start_time = date.today()
-                    end_time = time_now + (time_now.min - time_now) % timedelta(minutes=30)
+                    #end_time = time_now + (time_now.min - time_now) % timedelta(minutes=30)
+                    end_time = date.today()
                 case "2":
                     self.debugLog("Monthly Reporting")
                     start_time = datetime(time_now.year, time_now.month, 1).date()
-                    end_time = time_now + (time_now.min - time_now) % timedelta(minutes=30)
+                    #end_time = time_now + (time_now.min - time_now) % timedelta(minutes=30)
+                    end_time = date.today()
                 case "3":
                     self.debugLog("Yearly Reporting")
                     start_time = date(date.today().year, 1,1)
-                    end_time = time_now + (time_now.min - time_now) % timedelta(minutes=30)
+                    #end_time = time_now + (time_now.min - time_now) % timedelta(minutes=30)
+                    end_time = date.today()
 
             self.debugLog ("Start Time is "+ str(start_time))
             self.debugLog("End Time is " + str(end_time))
@@ -165,11 +171,11 @@ class Plugin(indigo.PluginBase):
             url = "https://api.givenergy.cloud/v1/inverter/{serial_num}/energy-flows".format(
                 serial_num=inverter_device.pluginProps["inverter_serial"])
             self.debugLog("URL is: " + url)
-            payload = {
+            payload = json.dumps({
                 "start_time": str(start_time),
                 "end_time": str(end_time),
                 "grouping": int(device.pluginProps['aggregation'])
-            }
+            })
 
             self.debugLog("Payload is:")
             self.debugLog(payload)
