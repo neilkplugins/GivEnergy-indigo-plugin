@@ -174,7 +174,15 @@ class Plugin(indigo.PluginBase):
             payload = json.dumps({
                 "start_time": str(start_time),
                 "end_time": str(end_time),
-                "grouping": int(device.pluginProps['aggregation'])
+                "grouping": int(device.pluginProps['aggregation']),
+                "types": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ]
             })
 
             self.debugLog("Payload is:")
